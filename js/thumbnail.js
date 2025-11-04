@@ -1,9 +1,8 @@
-import { generatePhotosArray } from './data.js';
-
 const createThumbnailElement = (photoData) => {
   const template = document.querySelector('#picture');
   const thumbnail = template.content.querySelector('.picture').cloneNode(true);
   const imgElement = thumbnail.querySelector('.picture__img');
+
   imgElement.src = photoData.url;
   imgElement.alt = photoData.description;
   thumbnail.querySelector('.picture__likes').textContent = photoData.likes;
@@ -12,15 +11,16 @@ const createThumbnailElement = (photoData) => {
   return thumbnail;
 };
 
-const renderThumbnails = () => {
+const renderThumbnails = (photos) => {
   const picturesContainer = document.querySelector('.pictures');
-  const photos = generatePhotosArray;
   const fragment = document.createDocumentFragment();
+  picturesContainer.querySelectorAll('.picture').forEach((element) => element.remove());
+
   photos.forEach((photo) => {
     const thumbnailElement = createThumbnailElement(photo);
     fragment.appendChild(thumbnailElement);
   });
-  picturesContainer.innerHTML = '';
+
   picturesContainer.appendChild(fragment);
 };
 

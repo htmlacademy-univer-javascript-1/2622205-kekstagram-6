@@ -55,7 +55,7 @@ const generateComment = () => ({
 });
 
 // Функция для генерации массива комментариев
-const generateComments = Array.from({length: getRandomInteger(0, 30)}, generateComment);
+const generateComments = () => Array.from({length: getRandomInteger(0, 30)}, generateComment);
 
 // Функция для генерации одного объекта с фотографией
 const generatePhoto = () => {
@@ -65,11 +65,11 @@ const generatePhoto = () => {
     url: `photos/${id}.jpg`,
     description: getRandomArrayElement(DESCRIPTIONS),
     likes: getRandomInteger(15, 200),
-    comments: generateComments
+    comments: generateComments()
   };
 };
 
 // Функция для создания массива из 25 объектов
-const generatePhotosArray = Array.from({length: 25}, generatePhoto);
+const generatePhotosArray = () => Array.from({length: 25}, generatePhoto);
 
-export{generatePhotosArray};
+export {generatePhotosArray};
