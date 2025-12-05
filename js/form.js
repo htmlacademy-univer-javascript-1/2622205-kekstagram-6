@@ -1,5 +1,7 @@
 // form.js
 
+import {addEventListenerImage, removeEventListenerImage, addFilter, removeFilters } from './effects.js';
+
 const uploadForm = document.querySelector('#upload-select-image');
 const uploadFileInput = uploadForm.querySelector('#upload-file');
 const uploadOverlay = uploadForm.querySelector('.img-upload__overlay');
@@ -9,6 +11,8 @@ const body = document.body;
 const openUploadForm = () => {
   uploadOverlay.classList.remove('hidden');
   body.classList.add('modal-open');
+  addEventListenerImage();
+  addFilter();
   document.addEventListener('keydown', onDocumentKeydown);
 };
 
@@ -17,6 +21,8 @@ const closeUploadForm = () => {
   uploadForm.reset();
   uploadOverlay.classList.add('hidden');
   body.classList.remove('modal-open');
+  removeEventListenerImage();
+  removeFilters();
   document.removeEventListener('keydown', onDocumentKeydown);
 };
 
@@ -41,14 +47,12 @@ uploadCancelButton.addEventListener('click', () => {
   closeUploadForm();
 });
 
-
 const pristine = new Pristine(uploadForm, {
   classTo: 'img-upload__field-wrapper',
   errorTextParent: 'img-upload__field-wrapper',
   errorTextTag: 'div',
   errorTextClass: 'img-upload__error'
 });
-
 
 const MAX_HASHTAG_COUNT = 5;
 const VALID_HASHTAG_REGEX = /^#[a-zа-яё0-9]{1,19}$/i;
@@ -77,7 +81,6 @@ const MAX_COMMENT_LENGTH = 140;
 
 const validateComment = (value) =>
   value.length <= MAX_COMMENT_LENGTH;
-
 
 const hashtagInput = uploadForm.querySelector('.text__hashtags');
 const commentInput = uploadForm.querySelector('.text__description');
@@ -112,7 +115,6 @@ pristine.addValidator(
   `Длина комментария не может составлять больше ${MAX_COMMENT_LENGTH} символов.`,
   false
 );
-
 
 uploadForm.addEventListener('submit', (evt) => {
   const isValid = pristine.validate();
