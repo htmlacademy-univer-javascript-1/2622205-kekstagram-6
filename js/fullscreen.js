@@ -1,3 +1,5 @@
+// fullscreen.js
+
 const COMMENT_STEP = 5;
 const bigPicture = document.querySelector('.big-picture');
 const bigPictureImgElement = bigPicture.querySelector('.big-picture__img img');

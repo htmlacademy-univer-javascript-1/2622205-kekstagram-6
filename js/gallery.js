@@ -1,3 +1,4 @@
+// gallery.js
 
 import { renderThumbnails } from './thumbnail.js';
 import { openFullscreen } from './fullscreen.js';
