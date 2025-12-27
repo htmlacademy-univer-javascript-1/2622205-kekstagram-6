@@ -1,4 +1,5 @@
 // fullscreen.js
+import { isEscapeKey } from './util.js';
 
 const COMMENT_STEP = 5;
 const bigPicture = document.querySelector('.big-picture');
@@ -48,8 +49,7 @@ const createCommentElement = (comment) => {
 };
 
 const updateCommentsCounter = () => {
-  const currentCountElement = commentCountBlock.firstChild;
-  currentCountElement.textContent = `${shownCommentsCount} из `;
+  commentCountBlock.innerHTML = `<span class="social__comment-shown-count">${shownCommentsCount}</span> из <span class="social__comment-total-count">${currentComments.length}</span> комментариев`;
   if (shownCommentsCount >= currentComments.length) {
     commentsLoaderButton.classList.add('hidden');
   } else {
@@ -83,7 +83,7 @@ function closeFullscreen () {
 }
 
 function onDocumentKeydown (evt) {
-  if (evt.key === 'Escape' && !bigPicture.classList.contains('hidden')) {
+  if (isEscapeKey(evt) && !bigPicture.classList.contains('hidden')) {
     evt.preventDefault();
     closeFullscreen();
   }
