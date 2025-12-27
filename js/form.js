@@ -1,7 +1,17 @@
 import { addEventListenerImage, removeEventListenerImage, addFilter, removeFilters } from './effects.js';
 import { sendData } from './api.js';
+import { isEscapeKey } from './util.js';
+
+const MAX_HASHTAG_COUNT = 5;
+const VALID_HASHTAG_REGEX = /^#[a-zа-яё0-9]{1,19}$/i;
+const MAX_COMMENT_LENGTH = 140;
 
 const FILE_TYPES = ['jpg', 'jpeg', 'png'];
+
+const SubmitButtonText = {
+  IDLE: 'Опубликовать',
+  SENDING: 'Опубликовываю...'
+};
 
 const uploadForm = document.querySelector('#upload-select-image');
 const uploadFileInput = uploadForm.querySelector('#upload-file');
@@ -14,11 +24,6 @@ const imgPreview = uploadForm.querySelector('.img-upload__preview img');
 const effectsPreviews = uploadForm.querySelectorAll('.effects__preview');
 
 const body = document.body;
-
-const SubmitButtonText = {
-  IDLE: 'Опубликовать',
-  SENDING: 'Опубликовываю...'
-};
 
 const pristine = new Pristine(uploadForm, {
   classTo: 'img-upload__field-wrapper',
@@ -42,10 +47,6 @@ const onFileInputChange = () => {
     openUploadForm();
   }
 };
-
-const MAX_HASHTAG_COUNT = 5;
-const VALID_HASHTAG_REGEX = /^#[a-zа-яё0-9]{1,19}$/i;
-const MAX_COMMENT_LENGTH = 140;
 
 const normalizeHashtags = (value) => value.trim().toLowerCase().split(/\s+/).filter((tag) => tag.length > 0);
 const validateHashtagSyntax = (value) => value.length === 0 || normalizeHashtags(value).every((tag) => VALID_HASHTAG_REGEX.test(tag));
@@ -84,7 +85,10 @@ const closeUploadForm = () => {
 };
 
 function onDocumentKeydown(evt) {
-  if (evt.key === 'Escape' && !document.activeElement.closest('.img-upload__text')) {
+  if (isEscapeKey(evt) && !document.activeElement.closest('.img-upload__text')) {
+    if (document.querySelector('.error')) {
+      return;
+    }
     evt.preventDefault();
     closeUploadForm();
   }
@@ -98,13 +102,10 @@ const showMessage = (type) => {
   const closeMessage = () => {
     messageElement.remove();
     document.removeEventListener('keydown', onMessageKeydown);
-    if (type === 'error') {
-      document.addEventListener('keydown', onDocumentKeydown);
-    }
   };
 
   function onMessageKeydown(evt) {
-    if (evt.key === 'Escape') {
+    if (isEscapeKey(evt)) {
       evt.preventDefault();
       closeMessage();
     }
@@ -117,9 +118,6 @@ const showMessage = (type) => {
   });
 
   document.addEventListener('keydown', onMessageKeydown);
-  if (type === 'error') {
-    document.removeEventListener('keydown', onDocumentKeydown);
-  }
 };
 
 const blockSubmitButton = () => {
@@ -132,10 +130,7 @@ const unblockSubmitButton = () => {
   submitButton.textContent = SubmitButtonText.IDLE;
 };
 
-uploadFileInput.addEventListener('change', onFileInputChange);
-uploadCancelButton.addEventListener('click', closeUploadForm);
-
-uploadForm.addEventListener('submit', (evt) => {
+const onUploadFormSubmit = (evt) => {
   evt.preventDefault();
   if (pristine.validate()) {
     blockSubmitButton();
@@ -149,4 +144,9 @@ uploadForm.addEventListener('submit', (evt) => {
       })
       .finally(unblockSubmitButton);
   }
-});
+};
+
+uploadFileInput.addEventListener('change', onFileInputChange);
+uploadCancelButton.addEventListener('click', closeUploadForm);
+
+uploadForm.addEventListener('submit', onUploadFormSubmit);

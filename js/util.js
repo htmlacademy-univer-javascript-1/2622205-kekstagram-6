@@ -21,6 +21,7 @@ const debounce = (callback, timeoutDelay = 500) => {
 
 const showAlert = (message) => {
   const alertContainer = document.createElement('div');
+  alertContainer.classList.add('data-error');
   alertContainer.style.zIndex = '100';
   alertContainer.style.position = 'absolute';
   alertContainer.style.left = '0';
@@ -38,5 +39,7 @@ const showAlert = (message) => {
   }, ALERT_SHOW_TIME);
 };
 
-export { getRandomInteger, getRandomArrayElement, debounce, showAlert };
+const isEscapeKey = (evt) => evt.key === 'Escape';
+
+export { getRandomInteger, getRandomArrayElement, debounce, showAlert, isEscapeKey };
 
